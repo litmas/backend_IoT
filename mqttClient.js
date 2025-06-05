@@ -31,19 +31,17 @@ class MQTTClient {
     return new Date(now.getFullYear(), now.getMonth(), now.getDate());
   }
 
-  async initializeMongoDB() {
-    try {
-      await mongoose.connect(process.env.MONGODB_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        serverSelectionTimeoutMS: 5000 
-      });
-      console.log('Connected to MongoDB');
-    } catch (err) {
-      console.error('MongoDB connection error:', err);
-      process.exit(1);
-    }
+async initializeMongoDB() {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000 
+    });
+    console.log('Connected to MongoDB');
+  } catch (err) {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
   }
+}
 
   setupMQTTListeners() {
     this.client.on('connect', () => {
