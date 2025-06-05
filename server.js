@@ -13,11 +13,24 @@ mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
+// Update your /api/data endpoint in server.js
 app.get('/api/data', async (req, res) => {
   try {
     const { start, end } = req.query;
+    
+    // Validate date parameters
+    if (!start || !end) {
+      return res.status(400).json({ error: 'Both start and end parameters are required' });
+    }
+
     const startDate = new Date(start);
     const endDate = new Date(end);
+    
+    // Check if dates are valid
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      return res.status(400).json({ error: 'Invalid date format. Use ISO format (e.g., 2023-06-05T12:00:00Z)' });
+    }
+
     const range = endDate - startDate;
     
     let data;
